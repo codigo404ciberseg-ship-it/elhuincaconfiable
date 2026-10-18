@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uber Viajes El Huinca & Chol Chol | Tu destino, nuestra prioridad</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Montserrat + Permanent Marker (Estilo Pincelada) + Caveat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        uber: {
+                            black: '#0A0A0A',
+                            dark: '#121212',
+                            card: '#1A1A1A',
+                            yellow: '#FFC700',
+                            yellowHover: '#E5B200',
+                            whatsapp: '#25D366',
+                            whatsappDark: '#1EBE5D'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        brush: ['"Permanent Marker"', 'cursive'],
+                        script: ['Caveat', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilo visual de pincelada / Brush Stroke similar a los afiches */
+        .brush-stroke-yellow {
+            background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+            clip-path: polygon(2% 8%, 98% 0%, 100% 88%, 97% 98%, 3% 95%, 0% 12%);
+            border-radius: 6px;
+        }
+
+        .brush-stroke-black {
+            background: #000000;
+            clip-path: polygon(1% 12%, 99% 3%, 97% 92%, 2% 98%);
+            border-radius: 6px;
+        }
+
+        .brush-stroke-green {
+            background: linear-gradient(135deg, #25D366 0%, #1EBE5D 100%);
+            clip-path: polygon(3% 5%, 97% 2%, 99% 92%, 1% 97%);
+            border-radius: 8px;
+        }
+
+        .badge-brush {
+            background-color: #FFC700;
+            color: #000;
+            display: inline-block;
+            padding: 4px 16px;
+            transform: rotate(-2deg);
+            clip-path: polygon(4% 0%, 96% 8%, 100% 92%, 0% 100%);
+        }
+
+        /* Línea punteada de ruta de mapa estilo afiche */
+        .road-dashed {
+            background-image: linear-gradient(to right, #FFC700 50%, rgba(255, 255, 255, 0) 0%);
+            background-position: bottom;
+            background-size: 15px 3px;
+            background-repeat: repeat-x;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FFC700;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-uber-black text-white font-sans antialiased selection:bg-uber-yellow selection:text-black">
+
+    <!-- Top Announcement Bar / Road Effect Header -->
+    <div class="bg-black border-b border-uber-yellow/20 py-2.5 px-4 text-center text-xs sm:text-sm font-semibold tracking-wide">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+            <span class="flex items-center gap-2 text-uber-yellow mx-auto sm:mx-0">
+                <i class="fa-solid fa-car"></i> Servicio Oficial Uber Local & Intercomunal
+            </span>
+            <div class="hidden sm:flex items-center gap-4 text-gray-300 text-xs">
+                <span><i class="fa-solid fa-shield-halved text-uber-yellow mr-1"></i> Viajes 100% Seguros</span>
+                <span><i class="fa-solid fa-clock text-uber-yellow mr-1"></i> Disponibilidad Inmediata</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Sticky Navbar -->
+    <header class="sticky top-0 z-40 bg-uber-black/95 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Brand Logo (Estilo Afiches) -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-11 h-11 bg-white text-black rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shadow-white/10 group-hover:bg-uber-yellow transition-colors">
+                        <i class="fa-solid fa-car-side"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-2xl font-black tracking-tighter text-white">Uber</span>
+                            <span class="bg-uber-yellow text-black text-[10px] font-black px-1.5 py-0.5 rounded tracking-widest uppercase">Oficial</span>
+                        </div>
+                        <p class="text-xs text-amber-400 font-bold tracking-wider -mt-1 font-script text-base">Tu destino, nuestra prioridad</p>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation & Call CTAs -->
+                <nav class="hidden md:flex items-center gap-6 font-bold text-sm">
+                    <a href="#zonas" class="hover:text-uber-yellow transition-colors">Servicios & Zonas</a>
+                    <a href="#cotizador" class="hover:text-uber-yellow transition-colors">Cotizar Viaje</a>
+                    <a href="#estimador" class="hover:text-uber-yellow transition-colors">Tarifas</a>
+                    <a href="#ventajas" class="hover:text-uber-yellow transition-colors">¿Por qué elegirnos?</a>
+                </nav>
+
+                <!-- Phone Buttons Header -->
+                <div class="hidden lg:flex items-center gap-3">
+                    <a href="https://wa.me/56986096433?text=Hola,%20necesito%20solicitar%20un%20viaje%20con%20Uber%20El%20Huinca" target="_blank" class="flex items-center gap-2 bg-uber-whatsapp hover:bg-uber-whatsappDark text-white font-extrabold px-4 py-2.5 rounded-xl shadow-lg transition-transform hover:scale-105 text-xs">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>El Huinca: +569 8609 6433</span>
+                    </a>
+                    <a href="https://wa.me/56986812707?text=Hola,%20necesito%20solicitar%20un%20viaje%20en%20Chol%20Chol" target="_blank" class="flex items-center gap-2 bg-uber-yellow hover:bg-uber-yellowHover text-black font-extrabold px-4 py-2.5 rounded-xl shadow-lg transition-transform hover:scale-105 text-xs">
+                        <i class="fa-solid fa-phone text-sm"></i>
+                        <span>Chol Chol: 986812707</span>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-white p-2 focus:outline-none">
+                    <i class="fa-solid fa-bars text-2xl" id="menu-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Container -->
+        <div id="mobile-menu" class="hidden md:hidden bg-uber-dark border-b border-gray-800 px-4 pt-3 pb-6 space-y-3">
+            <a href="#zonas" class="block py-2 text-gray-200 font-bold hover:text-uber-yellow">Servicios & Zonas</a>
+            <a href="#cotizador" class="block py-2 text-gray-200 font-bold hover:text-uber-yellow">Cotizar / Reservar Viaje</a>
+            <a href="#estimador" class="block py-2 text-gray-200 font-bold hover:text-uber-yellow">Estimador de Tarifa</a>
+            <a href="#ventajas" class="block py-2 text-gray-200 font-bold hover:text-uber-yellow">Ventajas</a>
+            <div class="pt-3 border-t border-gray-800 space-y-2">
+                <a href="https://wa.me/56986096433?text=Hola,%20necesito%20solicitar%20un%20viaje" target="_blank" class="w-full flex items-center justify-center gap-2 bg-uber-whatsapp text-white font-extrabold py-3 rounded-xl text-sm">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>WhatsApp El Huinca (+56986096433)</span>
+                </a>
+                <a href="https://wa.me/56986812707?text=Hola,%20solicito%20Uber%20en%20Chol%20Chol" target="_blank" class="w-full flex items-center justify-center gap-2 bg-uber-yellow text-black font-extrabold py-3 rounded-xl text-sm">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>Llamar Chol Chol (986812707)</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section / Zone Switcher -->
+    <section id="zonas" class="relative py-12 lg:py-16 overflow-hidden bg-gradient-to-b from-uber-black via-uber-dark to-uber-black">
+        
+        <!-- Background Subtle Grid -->
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#FFC700_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            
+            <!-- Main Zone Selector Tabs (Fiel a ambos afiches) -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-10 max-w-2xl mx-auto">
+                <button id="btn-tab-huinca" onclick="switchZone('huinca')" class="w-full sm:w-1/2 py-4 px-6 rounded-2xl font-black text-lg transition-all duration-300 border-2 border-uber-yellow bg-uber-yellow text-black shadow-xl shadow-uber-yellow/20 flex items-center justify-center gap-3 scale-105">
+                    <i class="fa-solid fa-route text-xl"></i>
+                    <span>Viajes El Huinca</span>
+                </button>
+                <button id="btn-tab-cholchol" onclick="switchZone('cholchol')" class="w-full sm:w-1/2 py-4 px-6 rounded-2xl font-black text-lg transition-all duration-300 border-2 border-gray-700 bg-uber-card text-gray-300 hover:border-uber-yellow flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-location-dot text-xl text-uber-yellow"></i>
+                    <span>Uber Chol Chol</span>
+                </button>
+            </div>
+
+            <!-- VISTA 1: AFICHE UBER VIAJES EL HUINCA -->
+            <div id="view-huinca" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Visual Card Left (Banner Afiche 1) -->
+                <div class="lg:col-span-6 space-y-6">
+                    
+                    <!-- Title Graphic Element with Yellow Brush -->
+                    <div class="inline-block relative">
+                        <div class="bg-black text-white px-6 py-2 rounded-xl text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight border-2 border-white/20 shadow-2xl flex items-center gap-3">
+                            <span>Uber</span>
+                            <div class="w-3 h-3 rounded-full bg-uber-yellow animate-ping"></div>
+                        </div>
+                    </div>
+
+                    <div class="relative py-2">
+                        <div class="brush-stroke-yellow p-4 sm:p-6 text-black transform -rotate-1">
+                            <h1 class="font-brush text-4xl sm:text-6xl uppercase tracking-wider leading-none">
+                                Viajes <br><span class="text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]">El Huinca</span>
+                            </h1>
+                        </div>
+                        <div class="mt-3 inline-block bg-black text-uber-yellow font-black text-xl sm:text-2xl px-6 py-2 rounded-lg border-2 border-uber-yellow tracking-widest transform rotate-1 shadow-lg">
+                            CONFIABLE
+                        </div>
+                    </div>
+
+                    <!-- Slogan Script -->
+                    <p class="font-script text-3xl sm:text-4xl text-amber-300 drop-shadow-md">
+                        "Tu destino, nuestra prioridad"
+                    </p>
+
+                    <!-- Feature Bullet Points (Fieles al afiche 1) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                        
+                        <div class="flex items-center gap-3.5 bg-uber-card p-3.5 rounded-2xl border border-gray-800 hover:border-uber-yellow/50 transition-colors">
+                            <div class="w-10 h-10 rounded-full bg-uber-yellow text-black flex items-center justify-center text-lg font-black shrink-0">
+                                <i class="fa-solid fa-shield-check"></i>
+                            </div>
+                            <span class="font-bold text-sm sm:text-base text-gray-100">Seguro y cómodo</span>
+                        </div>
+
+                        <div class="flex items-center gap-3.5 bg-uber-card p-3.5 rounded-2xl border border-gray-800 hover:border-uber-yellow/50 transition-colors">
+                            <div class="w-10 h-10 rounded-full bg-uber-yellow text-black flex items-center justify-center text-lg font-black shrink-0">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <span class="font-bold text-sm sm:text-base text-gray-100">Puntualidad en cada viaje</span>
+                        </div>
+
+                        <div class="flex items-center gap-3.5 bg-uber-card p-3.5 rounded-2xl border border-gray-800 hover:border-uber-yellow/50 transition-colors">
+                            <div class="w-10 h-10 rounded-full bg-uber-yellow text-black flex items-center justify-center text-lg font-black shrink-0">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <span class="font-bold text-sm sm:text-base text-gray-100">Traslados a todo destino</span>
+                        </div>
+
+                        <div class="flex items-center gap-3.5 bg-uber-card p-3.5 rounded-2xl border border-gray-800 hover:border-uber-yellow/50 transition-colors">
+                            <div class="w-10 h-10 rounded-full bg-uber-yellow text-black flex items-center justify-center text-lg font-black shrink-0">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+                            <span class="font-bold text-sm sm:text-base text-gray-100">Conductor de confianza</span>
+                        </div>
+
+                    </div>
+
+                    <!-- Direct WhatsApp CTA Banner (Image 1 Style) -->
+                    <div class="pt-4">
+                        <a href="https://wa.me/56986096433?text=Hola%20Uber%20Viajes%20El%20Huinca,%20necesito%20un%20traslado" target="_blank" class="block group">
+                            <div class="brush-stroke-green p-5 text-white shadow-2xl transition-transform group-hover:scale-[1.02]">
+                                <p class="font-brush text-xl sm:text-2xl text-center tracking-wide mb-1 text-yellow-300">Escríbenos a WhatsApp</p>
+                                <div class="bg-uber-yellow text-black rounded-xl py-3 px-4 text-center font-black text-3xl sm:text-4xl sm:tracking-wider flex items-center justify-center gap-3 shadow-inner">
+                                    <i class="fa-brands fa-whatsapp text-uber-whatsapp text-4xl"></i>
+                                    <span>+56986096433</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- Right Graphic Display Vehicle (Auto Chevy Negro como el del Afiche 1) -->
+                <div class="lg:col-span-6 relative">
+                    <div class="relative mx-auto rounded-3xl overflow-hidden border-2 border-uber-yellow/30 bg-uber-card shadow-2xl group">
+                        <img src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=900&q=80" alt="Uber Chevrolet Negro El Huinca" class="w-full h-80 sm:h-96 object-cover object-center group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-uber-black via-transparent to-transparent"></div>
+                        
+                        <div class="absolute top-4 right-4 bg-uber-yellow text-black font-black text-xs px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg">
+                            <i class="fa-solid fa-car"></i> El Huinca Confiable
+                        </div>
+
+                        <div class="absolute bottom-6 left-6 right-6 bg-black/80 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="font-bold text-white text-base">Traslados Locales e Interurbanos</h4>
+                                    <p class="text-xs text-gray-300">Cobertura completa a sectores rurales y urbanos</p>
+                                </div>
+                                <span class="text-uber-yellow font-black text-xl">100% Activo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- VISTA 2: AFICHE UBER CHOL CHOL -->
+            <div id="view-cholchol" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Visual Card Left (Banner Afiche 2) -->
+                <div class="lg:col-span-6 space-y-6">
+                    
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white text-black p-3 rounded-2xl font-black text-3xl shadow-xl flex items-center gap-2">
+                            <i class="fa-solid fa-car"></i>
+                            <span>Uber</span>
+                        </div>
+                        <span class="font-script text-2xl text-amber-300 font-bold">Tu viaje, a un clic</span>
+                    </div>
+
+                    <!-- Highlight "Ahora en CHOL CHOL" Brush Style -->
+                    <div class="relative py-2">
+                        <p class="font-script text-3xl text-white font-bold mb-1">¡Ahora en!</p>
+                        <div class="brush-stroke-yellow p-4 sm:p-6 text-black transform rotate-1">
+                            <h2 class="font-brush text-5xl sm:text-7xl uppercase tracking-wider leading-none text-black">
+                                CHOL CHOL
+                            </h2>
+                        </div>
+                    </div>
+
+                    <!-- Features Afiche 2 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        
+                        <div class="flex items-center gap-3.5 bg-uber-card p-3.5 rounded-2xl border border-gray-800">
+                            <div class="w-10 h-10 rounded-full bg-uber-yellow text-black flex items-center justify-center text-lg font-black shrink-0">
+                                <i class="fa-solid fa-shield"></i>
+                            </div>
+                            <span class="font-bold text-sm text-gray-100">Seguro en cada viaje</span>
+                        </div>
+
+                        <div class="flex items-center gap-3.5 bg-uber-card p-3.5 rounded-2xl border border-gray-800">
+                            <div class="w-10 h-10 rounded-full bg-uber-yellow text-black flex items-center justify-center text-lg font-black shrink-0">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <span class="font-bold text-sm text-gray-100">Rápido y confiable</span>
+                        </div>
+
+                        <div class="flex items-center gap-3.5 bg-uber-card p-3.5 rounded-2xl border border-gray-800">
+                            <div class="w-10 h-10 rounded-full bg-uber-yellow text-black flex items-center justify-center text-lg font-black shrink-0">
+                                <i class="fa-solid fa-id-card"></i>
+                            </div>
+                            <span class="font-bold text-sm text-gray-100">Conductores profesionales</span>
+                        </div>
+
+                        <div class="flex items-center gap-3.5 bg-uber-card p-3.5 rounded-2xl border border-gray-800">
+                            <div class="w-10 h-10 rounded-full bg-uber-yellow text-black flex items-center justify-center text-lg font-black shrink-0">
+                                <i class="fa-solid fa-mobile-screen-button"></i>
+                            </div>
+                            <span class="font-bold text-sm text-gray-100">Fácil de solicitar</span>
+                        </div>
+
+                    </div>
+
+                    <!-- CTA Chol Chol Section -->
+                    <div class="pt-4 space-y-3">
+                        <div class="bg-uber-yellow text-black p-4 rounded-2xl text-center shadow-2xl">
+                            <p class="font-black text-lg uppercase tracking-wider flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-car-side text-2xl"></i> SOLICITA TU UBER EN CHOL CHOL
+                            </p>
+                        </div>
+
+                        <a href="https://wa.me/56986812707?text=Hola,%20solicito%20un%20Uber%20en%20Chol%20Chol" target="_blank" class="block bg-uber-card hover:bg-black border-2 border-uber-yellow rounded-2xl p-4 transition-all text-center shadow-xl group">
+                            <span class="text-xs font-extrabold tracking-widest text-gray-400 block uppercase">LLAMAR O WHATSAPP AL</span>
+                            <div class="flex items-center justify-center gap-3 mt-1">
+                                <div class="w-10 h-10 rounded-full bg-uber-whatsapp text-white flex items-center justify-center text-2xl">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </div>
+                                <span class="text-3xl sm:text-4xl font-black text-white group-hover:text-uber-yellow transition-colors">986812707</span>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- Right Visual Toyota Sedan Chol Chol -->
+                <div class="lg:col-span-6 relative">
+                    <div class="relative mx-auto rounded-3xl overflow-hidden border-2 border-uber-yellow/30 bg-uber-card shadow-2xl group">
+                        <img src="https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=900&q=80" alt="Uber Toyota Chol Chol" class="w-full h-80 sm:h-96 object-cover object-center group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-uber-black via-transparent to-transparent"></div>
+                        
+                        <div class="absolute top-4 right-4 bg-uber-yellow text-black font-black text-xs px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg">
+                            <i class="fa-solid fa-location-dot"></i> Uber Chol-Chol
+                        </div>
+
+                        <div class="absolute bottom-6 left-6 right-6 bg-black/80 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+                            <p class="font-script text-2xl text-uber-yellow text-center font-bold">
+                                ¡Tu destino, nuestra prioridad!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Interactive Travel Booking Form (Cotizador directo a WhatsApp) -->
+    <section id="cotizador" class="py-16 bg-uber-dark relative border-y border-gray-800">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center mb-10">
+                <span class="badge-brush font-bold text-xs uppercase tracking-widest mb-2">Reserva Rápida</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">Cotiza o Pide tu Viaje en Segundos</h2>
+                <p class="text-gray-400 text-sm mt-2">Ingresa tus datos y te derivaremos directamente con el conductor disponible</p>
+            </div>
+
+            <form id="booking-form" onsubmit="handleBooking(event)" class="bg-uber-card p-6 sm:p-8 rounded-3xl border border-gray-800 shadow-2xl space-y-6">
+                
+                <!-- Zone Choice in Form -->
+                <div>
+                    <label class="block text-xs font-extrabold uppercase text-gray-300 tracking-wider mb-2">Selecciona la Zona de Servicio</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center justify-center p-3 rounded-xl border-2 border-uber-yellow bg-uber-yellow/10 text-white font-bold cursor-pointer hover:bg-uber-yellow/20 text-sm">
+                            <input type="radio" name="form_zone" value="huinca" checked class="accent-uber-yellow mr-2">
+                            Viajes El Huinca (+56986096433)
+                        </label>
+                        <label class="flex items-center justify-center p-3 rounded-xl border-2 border-gray-700 bg-black/40 text-gray-300 font-bold cursor-pointer hover:border-uber-yellow text-sm">
+                            <input type="radio" name="form_zone" value="cholchol" class="accent-uber-yellow mr-2">
+                            Uber Chol Chol (986812707)
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Input Fields -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-400 mb-1.5"><i class="fa-solid fa-circle text-uber-yellow text-[10px] mr-1"></i> Punto de Origen</label>
+                        <input type="text" id="origin" required placeholder="Ej: Centro Chol Chol, El Huinca, etc." 
+                               class="w-full bg-black border border-gray-700 focus:border-uber-yellow text-white px-4 py-3 rounded-xl text-sm focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-400 mb-1.5"><i class="fa-solid fa-location-dot text-rose-500 text-[10px] mr-1"></i> Punto de Destino</label>
+                        <input type="text" id="destination" required placeholder="Ej: Nueva Imperial, Temuco, Hospital..." 
+                               class="w-full bg-black border border-gray-700 focus:border-uber-yellow text-white px-4 py-3 rounded-xl text-sm focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-400 mb-1.5"><i class="fa-solid fa-calendar-day text-uber-yellow mr-1"></i> Fecha</label>
+                        <input type="date" id="travel-date" required class="w-full bg-black border border-gray-700 focus:border-uber-yellow text-white px-4 py-3 rounded-xl text-sm focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-400 mb-1.5"><i class="fa-solid fa-clock text-uber-yellow mr-1"></i> Hora Aproximada</label>
+                        <input type="time" id="travel-time" required class="w-full bg-black border border-gray-700 focus:border-uber-yellow text-white px-4 py-3 rounded-xl text-sm focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-400 mb-1.5"><i class="fa-solid fa-users text-uber-yellow mr-1"></i> Pasajeros</label>
+                        <select id="passengers" class="w-full bg-black border border-gray-700 focus:border-uber-yellow text-white px-4 py-3 rounded-xl text-sm focus:outline-none">
+                            <option value="1 persona">1 Pasajero</option>
+                            <option value="2 personas">2 Pasajeros</option>
+                            <option value="3 personas">3 Pasajeros</option>
+                            <option value="4 personas">4 Pasajeros (Máximo)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-400 mb-1.5">Comentarios Adicionales (Opcional)</label>
+                    <input type="text" id="notes" placeholder="Ej: Llevo equipaje, viaje de urgencia, etc." 
+                           class="w-full bg-black border border-gray-700 focus:border-uber-yellow text-white px-4 py-3 rounded-xl text-sm focus:outline-none">
+                </div>
+
+                <button type="submit" class="w-full py-4 bg-uber-whatsapp hover:bg-uber-whatsappDark text-white font-black rounded-xl text-base shadow-xl transition-transform hover:scale-[1.01] flex items-center justify-center gap-3">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    <span>SOLICITAR VIAJE POR WHATSAPP AHORA</span>
+                </button>
+
+            </form>
+
+        </div>
+    </section>
+
+    <!-- Dynamic Fare Estimator Section -->
+    <section id="estimador" class="py-16 bg-uber-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-uber-yellow font-script text-2xl font-bold">Transparencia y buenos precios</span>
+                <h2 class="text-3xl sm:text-4xl font-black text-white mt-1">Estimador de Tarifa Rápida</h2>
+                <p class="text-gray-400 text-sm mt-2">Precios aproximados según trayectos habituales de la zona</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Card 1 -->
+                <div class="bg-uber-card p-6 rounded-3xl border border-gray-800 hover:border-uber-yellow transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between text-xs text-amber-400 font-bold mb-3">
+                            <span>URBANO LOCAL</span>
+                            <i class="fa-solid fa-city"></i>
+                        </div>
+                        <h3 class="text-xl font-black text-white">Viaje Dentro de Chol Chol</h3>
+                        <p class="text-xs text-gray-400 mt-2">Traslados rápidos entre sectores urbanos, supermercados, servicios públicos y domicilios.</p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-gray-800 flex items-center justify-between">
+                        <span class="text-xs text-gray-400">Desde</span>
+                        <span class="text-2xl font-black text-uber-yellow">$2.500</span>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-uber-card p-6 rounded-3xl border-2 border-uber-yellow relative shadow-2xl flex flex-col justify-between">
+                    <span class="absolute -top-3 right-6 bg-uber-yellow text-black font-black text-[10px] px-3 py-1 rounded-full uppercase">Más Frecuente</span>
+                    <div>
+                        <div class="flex items-center justify-between text-xs text-amber-400 font-bold mb-3">
+                            <span>RURAL Y RUTA</span>
+                            <i class="fa-solid fa-tree"></i>
+                        </div>
+                        <h3 class="text-xl font-black text-white">Chol Chol ↔ Nueva Imperial</h3>
+                        <p class="text-xs text-gray-400 mt-2">Conexión directa entre comunas con máxima seguridad y rapidez garantizada.</p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-gray-800 flex items-center justify-between">
+                        <span class="text-xs text-gray-400">Desde</span>
+                        <span class="text-2xl font-black text-uber-yellow">$8.000</span>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-uber-card p-6 rounded-3xl border border-gray-800 hover:border-uber-yellow transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between text-xs text-amber-400 font-bold mb-3">
+                            <span>INTERCOMUNAL</span>
+                            <i class="fa-solid fa-plane-departure"></i>
+                        </div>
+                        <h3 class="text-xl font-black text-white">Chol Chol ↔ Temuco</h3>
+                        <p class="text-xs text-gray-400 mt-2">Viajes hacia centro de Temuco, hospitales, terminales de buses o aeropuerto.</p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-gray-800 flex items-center justify-between">
+                        <span class="text-xs text-gray-400">Desde</span>
+                        <span class="text-2xl font-black text-uber-yellow">$18.000</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Ventajas / Por qué elegirnos -->
+    <section id="ventajas" class="py-16 bg-uber-dark border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                
+                <div class="bg-black p-6 rounded-2xl border border-gray-800 text-center">
+                    <div class="w-12 h-12 bg-uber-yellow text-black rounded-xl flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h4 class="font-extrabold text-white text-base">Conductores Locales</h4>
+                    <p class="text-xs text-gray-400 mt-2">Conocen a la perfección todos los atajos, rutas rurales y puntos clave de la zona.</p>
+                </div>
+
+                <div class="bg-black p-6 rounded-2xl border border-gray-800 text-center">
+                    <div class="w-12 h-12 bg-uber-yellow text-black rounded-xl flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <h4 class="font-extrabold text-white text-base">Puntualidad Absoluta</h4>
+                    <p class="text-xs text-gray-400 mt-2">Llegamos a la hora acordada para que nunca pierdas una hora médica o compromiso.</p>
+                </div>
+
+                <div class="bg-black p-6 rounded-2xl border border-gray-800 text-center">
+                    <div class="w-12 h-12 bg-uber-yellow text-black rounded-xl flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                        <i class="fa-solid fa-car-side"></i>
+                    </div>
+                    <h4 class="font-extrabold text-white text-base">Autos Cómodos</h4>
+                    <p class="text-xs text-gray-400 mt-2">Vehículos en excelente estado, limpios y equipados para un viaje placentero.</p>
+                </div>
+
+                <div class="bg-black p-6 rounded-2xl border border-gray-800 text-center">
+                    <div class="w-12 h-12 bg-uber-yellow text-black rounded-xl flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <h4 class="font-extrabold text-white text-base">Atención Directa</h4>
+                    <p class="text-xs text-gray-400 mt-2">Sin intermediarios ni demoras de aplicaciones. Trato directo e inmediato por WhatsApp.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Fiel -->
+    <footer class="bg-black text-gray-400 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-gray-800">
+                
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white text-black rounded-xl flex items-center justify-center font-black text-2xl">
+                        <i class="fa-solid fa-car-side"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-black text-white">Uber Viajes El Huinca & Chol Chol</span>
+                        <p class="text-xs text-amber-400 font-script text-base">Tu destino, nuestra prioridad</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-bold">
+                    <a href="https://wa.me/56986096433" target="_blank" class="text-uber-whatsapp hover:underline">
+                        <i class="fa-brands fa-whatsapp"></i> El Huinca (+56986096433)
+                    </a>
+                    <span class="text-gray-700">•</span>
+                    <a href="https://wa.me/56986812707" target="_blank" class="text-uber-yellow hover:underline">
+                        <i class="fa-solid fa-phone"></i> Chol Chol (986812707)
+                    </a>
+                </div>
+
+            </div>
+
+            <div class="pt-8 text-center text-xs text-gray-500">
+                <p>&copy; 2026 Uber Viajes El Huinca Confiable / Chol Chol. Todos los derechos reservados.</p>
+                <p class="mt-1 font-script text-sm text-gray-400">Servicio de transporte privado y personalizado en la IX Región.</p>
+                <p>Creado por <strong>&copy; Código 404 Ciberseguridad</strong></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botón Flotante Fijo WhatsApp -->
+    <a href="https://wa.me/56986096433?text=Hola,%20necesito%20solicitar%20un%20viaje%20ahora" target="_blank" 
+       class="fixed bottom-6 right-6 z-50 bg-uber-whatsapp hover:bg-uber-whatsappDark text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-2xl transition-transform hover:scale-110 border-2 border-white/20 animate-bounce">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- Logic Script -->
+    <script>
+        // Set Default Date in form to today
+        document.getElementById('travel-date').valueAsDate = new Date();
+
+        // Switch View Zone (El Huinca vs Chol Chol)
+        function switchZone(zone) {
+            const huincaView = document.getElementById('view-huinca');
+            const cholcholView = document.getElementById('view-cholchol');
+            const huincaTab = document.getElementById('btn-tab-huinca');
+            const cholcholTab = document.getElementById('btn-tab-cholchol');
+
+            if (zone === 'huinca') {
+                huincaView.classList.remove('hidden');
+                cholcholView.classList.add('hidden');
+
+                huincaTab.className = "w-full sm:w-1/2 py-4 px-6 rounded-2xl font-black text-lg transition-all duration-300 border-2 border-uber-yellow bg-uber-yellow text-black shadow-xl shadow-uber-yellow/20 flex items-center justify-center gap-3 scale-105";
+                cholcholTab.className = "w-full sm:w-1/2 py-4 px-6 rounded-2xl font-black text-lg transition-all duration-300 border-2 border-gray-700 bg-uber-card text-gray-300 hover:border-uber-yellow flex items-center justify-center gap-3";
+            } else {
+                huincaView.classList.add('hidden');
+                cholcholView.classList.remove('hidden');
+
+                cholcholTab.className = "w-full sm:w-1/2 py-4 px-6 rounded-2xl font-black text-lg transition-all duration-300 border-2 border-uber-yellow bg-uber-yellow text-black shadow-xl shadow-uber-yellow/20 flex items-center justify-center gap-3 scale-105";
+                huincaTab.className = "w-full sm:w-1/2 py-4 px-6 rounded-2xl font-black text-lg transition-all duration-300 border-2 border-gray-700 bg-uber-card text-gray-300 hover:border-uber-yellow flex items-center justify-center gap-3";
+            }
+        }
+
+        // Form Handling to WhatsApp
+        function handleBooking(event) {
+            event.preventDefault();
+
+            const zoneRadios = document.getElementsByName('form_zone');
+            let selectedZone = 'huinca';
+            for (const radio of zoneRadios) {
+                if (radio.checked) {
+                    selectedZone = radio.value;
+                    break;
+                }
+            }
+
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+            const date = document.getElementById('travel-date').value;
+            const time = document.getElementById('travel-time').value;
+            const passengers = document.getElementById('passengers').value;
+            const notes = document.getElementById('notes').value;
+
+            // Target Phone base
+            const targetPhone = selectedZone === 'huinca' ? '56986096433' : '56986812707';
+            const zoneTitle = selectedZone === 'huinca' ? 'Uber Viajes El Huinca' : 'Uber Chol Chol';
+
+            // Message Construction
+            let message = `Hola *${zoneTitle}*, solicito cotización / reserva de viaje:%0A%0A`;
+            message += `📍 *Origen:* ${origin}%0A`;
+            message += `🏁 *Destino:* ${destination}%0A`;
+            message += `📅 *Fecha:* ${date}%0A`;
+            message += `⏰ *Hora:* ${time}%0A`;
+            message += `👥 *Pasajeros:* ${passengers}%0A`;
+            if (notes) {
+                message += `📝 *Notas:* ${notes}%0A`;
+            }
+
+            // Open WhatsApp Link
+            window.open(`https://wa.me/${targetPhone}?text=${message}`, '_blank');
+        }
+
+        // Mobile Menu Toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
