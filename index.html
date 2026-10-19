@@ -88,6 +88,14 @@
             border-radius: 4px;
         }
     </style>
+    <!-- ========================================== -->
+    <!-- 1. META TAGS PARA PWA (Agregar en el <head>) -->
+    <!-- ========================================== -->
+    <meta name="theme-color" content="#FFC700">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Uber Huinca">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/color/512/uber.png">
 </head>
 <body class="bg-uber-black text-white font-sans antialiased selection:bg-uber-yellow selection:text-black">
 
@@ -610,6 +618,8 @@
                 <p>&copy; 2026 Uber Viajes El Huinca Confiable / Chol Chol. Todos los derechos reservados.</p>
                 <p class="mt-1 font-script text-sm text-gray-400">Servicio de transporte privado y personalizado en la IX Región.</p>
                 <p>Creado por <strong>&copy; Código 404 Ciberseguridad</strong></p>
+                <p><a href="politica.html" class="text-[#FFC700]">
+                <span>🔒</span> Política de Privacidad (Ley 19.628)</a></p>
             </div>
         </div>
     </footer>
@@ -619,6 +629,46 @@
        class="fixed bottom-6 right-6 z-50 bg-uber-whatsapp hover:bg-uber-whatsappDark text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-2xl transition-transform hover:scale-110 border-2 border-white/20 animate-bounce">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
+
+<!-- ========================================== -->
+<!-- 2. BOTÓN DE INSTALACIÓN                    -->
+<!-- ========================================== -->
+<!-- Banner Flotante Siempre Visible -->
+<div id="pwa-install-banner" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 z-[9999] bg-zinc-950 text-white border-2 border-[#FFC700] rounded-2xl p-4 shadow-2xl backdrop-blur-md flex items-center justify-between gap-4 max-w-md transition-all duration-300">
+  <div class="flex items-center gap-3">
+    <div class="w-12 h-12 bg-[#FFC700] text-black font-black rounded-xl flex items-center justify-center text-xl shrink-0 shadow-md">
+        <img src="favicon.png" alt="Icono App" class="w-full h-full object-contain">
+        </div>
+    <div>
+      <h4 class="font-bold text-sm text-[#FFC700] flex items-center gap-1">
+        ¡Instalar Aplicación!
+      </h4>
+      <p class="text-xs text-gray-300">Acceso directo desde tu pantalla de inicio.</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2 shrink-0">
+    <button id="btn-pwa-install" class="bg-[#FFC700] text-black font-black px-4 py-2 rounded-xl text-xs uppercase tracking-wider hover:bg-yellow-400 active:scale-95 transition-all shadow-lg">
+      Instalar
+    </button>
+    <button onclick="document.getElementById('pwa-install-banner').remove()" class="text-gray-400 hover:text-white p-1 text-lg">
+      ✕
+    </button>
+  </div>
+</div>
+
+<!-- Modal Guía para iOS / Navegadores sin prompt -->
+<div id="pwa-ios-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[10000] flex items-end sm:items-center justify-center p-4">
+  <div class="bg-zinc-900 border-2 border-[#FFC700] rounded-2xl p-6 max-w-sm w-full text-center text-white space-y-4">
+    <div class="text-4xl">📱</div>
+    <h3 class="text-lg font-bold text-[#FFC700]">Cómo instalar en tu dispositivo</h3>
+    <div id="pwa-instructions-content" class="text-sm text-gray-300 space-y-2 text-left bg-zinc-800 p-4 rounded-xl border border-zinc-700">
+      <!-- Se llena dinámicamente con JS según el sistema -->
+    </div>
+    <button onclick="document.getElementById('pwa-ios-modal').classList.add('hidden')" class="w-full bg-[#FFC700] text-black font-bold py-2.5 rounded-xl text-sm uppercase">
+      Entendido
+    </button>
+  </div>
+</div>
 
     <!-- Logic Script -->
     <script>
@@ -692,5 +742,103 @@
             menu.classList.toggle('hidden');
         });
     </script>
+
+    <!-- ========================================== -->
+    <!-- 3. SCRIPT MOTOR DE LA PWA                  -->
+    <!-- ========================================== -->
+     <script>
+        (function() {
+    // 1. Ocultar si ya está instalada como PWA Standalone
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (isStandalone) {
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.style.display = 'none';
+      return;
+    }
+
+    // 2. Crear Manifest en Blob
+    const manifestData = {
+      name: "Uber Viajes El Huinca & Chol Chol",
+      short_name: "Uber Huinca",
+      description: "Servicio de transporte confiable, rápido y seguro.",
+      start_url: "./",
+      display: "standalone",
+      background_color: "#0a0a0a",
+      theme_color: "#FFC700",
+      orientation: "portrait",
+      icons: [
+        { src: "https://img.icons8.com/color/192/uber.png", sizes: "192x192", type: "image/png" },
+        { src: "https://img.icons8.com/color/512/uber.png", sizes: "512x512", type: "image/png" }
+      ]
+    };
+    const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
+    const manifestURL = URL.createObjectURL(manifestBlob);
+    const manifestLink = document.createElement('link');
+    manifestLink.rel = 'manifest';
+    manifestLink.href = manifestURL;
+    document.head.appendChild(manifestLink);
+
+    // 3. Service Worker
+    const swCode = `
+      const CACHE_NAME = 'uber-huinca-pwa-v2';
+      self.addEventListener('install', (e) => {
+        e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(['./'])));
+        self.skipWaiting();
+      });
+      self.addEventListener('activate', (e) => {
+        e.waitUntil(caches.keys().then((keys) => Promise.all(keys.map((k) => k !== CACHE_NAME && caches.delete(k)))));
+        self.clients.claim();
+      });
+      self.addEventListener('fetch', (e) => {
+        e.respondWith(caches.match(e.request).then((res) => res || fetch(e.request).catch(() => caches.match('./'))));
+      });
+    `;
+    const swBlob = new Blob([swCode], { type: 'text/javascript' });
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(console.warn);
+    }
+
+    // 4. Control del evento de instalación
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('btn-pwa-install');
+    const modal = document.getElementById('pwa-ios-modal');
+    const instructions = document.getElementById('pwa-instructions-content');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+
+    if (installBtn) {
+      installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+          // Si el navegador soporta prompt automático (Chrome Android / PC)
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            document.getElementById('pwa-install-banner').style.display = 'none';
+          }
+          deferredPrompt = null;
+        } else {
+          // Si es iOS Safari o navegador sin prompt directo
+          const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+          if (isIOS) {
+            instructions.innerHTML = `
+              <p class="flex items-center gap-2">1. Toca el botón <strong>Compartir</strong> <span class="text-xl">ios_share</span> en Safari.</p>
+              <p class="flex items-center gap-2">2. Selecciona <strong>"Agregar al inicio"</strong> <span class="text-xl">add_box</span>.</p>
+              <p class="flex items-center gap-2">3. Confirma tocando <strong>Agregar</strong>.</p>
+            `;
+          } else {
+            instructions.innerHTML = `
+              <p>1. Abre el menú de tu navegador (los 3 puntos ⋮ en la esquina superior).</p>
+              <p>2. Selecciona <strong>"Instalar aplicación"</strong> o <strong>"Agregar a la pantalla principal"</strong>.</p>
+            `;
+          }
+          modal.classList.remove('hidden');
+        }
+      });
+    }
+  })();
+     </script>
 </body>
 </html>
