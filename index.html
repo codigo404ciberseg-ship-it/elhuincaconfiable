@@ -88,12 +88,11 @@
             border-radius: 4px;
         }
     </style>
-    <!-- Banner Flotante de Instalación -->
+    <!-- Banner Flotante de Instalación PWA -->
 <div id="pwa-install-banner" class="hidden fixed bottom-4 left-4 right-4 md:left-auto md:right-4 z-[9999] bg-zinc-950 text-white border-2 border-[#FFC700] rounded-2xl p-4 shadow-2xl backdrop-blur-md flex items-center justify-between gap-4 max-w-md transition-all duration-300">
   <div class="flex items-center gap-3">
-    <!-- Icono usando tu Favicon PNG -->
     <div class="w-12 h-12 bg-[#FFC700] rounded-xl flex items-center justify-center overflow-hidden shrink-0 shadow-md p-1.5">
-      <img src="favicon.png" alt="Icono App" class="w-full h-full object-contain">
+      <img src="favicon.png" onerror="this.src='https://img.icons8.com/color/192/uber.png'" alt="Icono App" class="w-full h-full object-contain">
     </div>
     <div>
       <h4 class="font-bold text-sm text-[#FFC700]">Descargar Aplicación</h4>
@@ -104,7 +103,7 @@
     <button id="btn-pwa-install" class="bg-[#FFC700] text-black font-black px-4 py-2 rounded-xl text-xs uppercase tracking-wider hover:bg-yellow-400 active:scale-95 transition-all shadow-lg cursor-pointer">
       Descargar
     </button>
-    <button id="btn-close-pwa-banner" class="text-gray-400 hover:text-white p-1 text-lg">
+    <button id="btn-close-pwa-banner" class="text-gray-400 hover:text-white p-1 text-lg cursor-pointer">
       ✕
     </button>
   </div>
@@ -761,115 +760,88 @@
     <!-- 3. SCRIPT MOTOR DE LA PWA                  -->
     <!-- ========================================== -->
      <script>
-        (function() {
+  (function() {
     const banner = document.getElementById('pwa-install-banner');
     const installBtn = document.getElementById('btn-pwa-install');
     const closeBtn = document.getElementById('btn-close-pwa-banner');
-    const iosModal = document.getElementById('pwa-ios-modal');
-    const closeIosBtn = document.getElementById('btn-close-ios-modal');
 
-    // Función para ocultar la ventana permanentemente
-    function hideBannerPermanently() {
-      if (banner) banner.classList.add('hidden');
-      localStorage.setItem('pwa_installed_or_dismissed', 'true');
+    // Ocultar si ya fue instalada o si el usuario cerró el mensaje
+    if (window.matchMedia('(display-mode: standalone)').matches || localStorage.getItem('pwa_dismissed') === 'true') {
+      return;
     }
 
-    // 1. Verificación inicial: Si ya está instalada o el usuario la cerró, NO MOSTRAR
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    const isDismissed = localStorage.getItem('pwa_installed_or_dismissed') === 'true';
-
-    if (isStandalone || isDismissed) {
-      return; // Sale sin mostrar el banner
-    }
-
-    // 2. Registro del Manifest dinámico
+    // Manifest inyectado dinámicamente con icono de respaldo activo
     const manifestData = {
       name: "Uber Viajes El Huinca & Chol Chol",
       short_name: "Uber Huinca",
-      description: "Servicio de transporte confiable.",
       start_url: "./",
       display: "standalone",
       background_color: "#0a0a0a",
       theme_color: "#FFC700",
-      orientation: "portrait",
       icons: [
-        { src: "favicon.png", sizes: "192x192", type: "image/png" },
-        { src: "favicon.png", sizes: "512x512", type: "image/png" }
+        { src: "https://img.icons8.com/color/192/uber.png", sizes: "192x192", type: "image/png", purpose: "any maskable" },
+        { src: "https://img.icons8.com/color/512/uber.png", sizes: "512x512", type: "image/png", purpose: "any maskable" }
       ]
     };
+
     const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
     const manifestLink = document.createElement('link');
     manifestLink.rel = 'manifest';
     manifestLink.href = URL.createObjectURL(manifestBlob);
     document.head.appendChild(manifestLink);
 
-    // 3. Service Worker
+    // Registro simplificado de Service Worker
     if ('serviceWorker' in navigator) {
       const swCode = `
-        const CACHE_NAME = 'uber-app-cache-v1';
-        self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE_NAME)); self.skipWaiting(); });
-        self.addEventListener('activate', (e) => { self.clients.claim(); });
-        self.addEventListener('fetch', (e) => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
+        self.addEventListener('install', (e) => self.skipWaiting());
+        self.addEventListener('activate', (e) => self.clients.claim());
+        self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
       `;
       const swBlob = new Blob([swCode], { type: 'text/javascript' });
       navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
     }
 
-    // 4. Capturar el evento de descarga/instalación
     let deferredPrompt = null;
 
+    // Detectar cuando el navegador está listo para la descarga directa
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      // Muestra la ventana únicamente cuando el teléfono está listo para descargar directamente
       if (banner) banner.classList.remove('hidden');
     });
 
-    // Acción del Botón DESCARGAR
+    // Acción del botón "Descargar"
     if (installBtn) {
       installBtn.addEventListener('click', async () => {
         if (deferredPrompt) {
-          // Dispara el diálogo de descarga directa del sistema Android/Chrome
           deferredPrompt.prompt();
           const { outcome } = await deferredPrompt.userChoice;
-          
           if (outcome === 'accepted') {
-            console.log('El usuario aceptó la descarga.');
-            hideBannerPermanently(); // Oculta la ventana automáticamente al aceptar
+            banner.classList.add('hidden');
+            localStorage.setItem('pwa_dismissed', 'true');
           }
           deferredPrompt = null;
         } else {
-          // Si es iOS/Safari (Apple bloquea las descargas automáticas por software)
-          const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-          if (isIOS && iosModal) {
-            iosModal.classList.remove('hidden');
-          } else {
-            // Si no soporta prompt automático, oculta el banner
-            hideBannerPermanently();
-          }
+          // Si no hay prompt nativo (por estar en desarrollo o iOS), forzar ocultado tras el clic
+          alert("Para instalar esta App en tu teléfono, presiona el menú de tu navegador (⋮) y selecciona 'Agregar a la pantalla principal' o 'Instalar Aplicación'.");
+          banner.classList.add('hidden');
+          localStorage.setItem('pwa_dismissed', 'true');
         }
       });
     }
 
-    // Si el usuario cierra manualmente la ventana volante
     if (closeBtn) {
       closeBtn.addEventListener('click', () => {
-        hideBannerPermanently();
+        banner.classList.add('hidden');
+        localStorage.setItem('pwa_dismissed', 'true');
       });
     }
 
-    if (closeIosBtn) {
-      closeIosBtn.addEventListener('click', () => {
-        if (iosModal) iosModal.classList.add('hidden');
-        hideBannerPermanently();
-      });
-    }
-
-    // Evento nativo cuando la App se termina de instalar con éxito
     window.addEventListener('appinstalled', () => {
-      hideBannerPermanently();
+      if (banner) banner.classList.add('hidden');
+      localStorage.setItem('pwa_dismissed', 'true');
     });
   })();
-     </script>
+</script>
 </body>
 </html>
